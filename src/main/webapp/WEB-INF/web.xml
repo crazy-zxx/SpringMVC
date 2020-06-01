@@ -5,6 +5,51 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <!--
+   得通过一种方式，让Servlet容器实例化的Filter，间接引用Spring容器实例化的AuthFilter。
+   Spring MVC提供了一个DelegatingFilterProxy，专门来干这个事
+
+   实现原理：
+    Servlet容器从web.xml中读取配置，实例化DelegatingFilterProxy，注意命名是authFilter；
+    Spring容器通过扫描@Component实例化AuthFilter。
+    当DelegatingFilterProxy生效后，它会自动查找注册在ServletContext上的Spring容器，再试图从容器中查找名为authFilter的Bean，也就是我们用@Component声明的AuthFilter。
+   -->
+  <filter>
+    <filter-name>authFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <!--  如果在web.xml中配置的Filter名字和Spring容器的Bean的名字不一致，那么需要指定Bean的名字：
+    <init-param>
+        <param-name>targetBeanName</param-name>
+        <param-value>authFilter</param-value>
+    </init-param>
+    -->
+  </filter>
+
+  <!-- filter映射要放在一起，不能与filter穿插 -->
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>authFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
   <!--  最简单的启动Spring容器的方式：配置Spring MVC提供的DispatcherServlet  -->
   <!--
     初始化参数contextClass指定使用注解配置的AnnotationConfigWebApplicationContext，
@@ -29,4 +74,5 @@
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
+
 </web-app>
