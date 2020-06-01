@@ -21,7 +21,7 @@
     <spring.version>5.2.0.RELEASE</spring.version>
     <pebble.version>3.1.2</pebble.version>
     <logback.version>1.2.3</logback.version>
-    <tomcat.version>9.0.26</tomcat.version>
+    <tomcat.version>9.0.35</tomcat.version>
     <hikaricp.version>3.4.2</hikaricp.version>
     <hsqldb.version>2.5.0</hsqldb.version>
     <jackson.version>2.11.0</jackson.version>
